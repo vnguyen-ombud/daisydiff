@@ -168,7 +168,7 @@ public class HtmlSaxDiffOutput implements DiffOutput {
                 if (textChild instanceof ImageNode) {
                     writeImage((ImageNode)textChild);
                 } else if (textChild instanceof VideoNode) {
-                    writeVideo((VideoNode)textchild);
+                    writeVideo((VideoNode)textChild);
                 } else {
                     handler.characters(chars, 0, chars.length);
                 }
