@@ -8,9 +8,9 @@ function htmlDiffInit() {
 }
 
 function updateOverlays(){
-    
+
     var images = document.getElementsByTagName("img");
-    
+
     for (var i = 0; i < images.length; i++) {
         var image = images [i];
         if (image.getAttribute('changeType') == "diff-removed-image" || image.getAttribute('changeType') == "diff-added-image") {
@@ -35,8 +35,36 @@ function updateOverlays(){
             }
         }
     }
+    var videos = document.getElementsByTagName("iframe");
+
+    for (var i = 0; i < videos.length; i++) {
+        var video = videos [i];
+        if (video.getAttribute('changeType') == "diff-removed-video" || image.getAttribute('changeType') == "diff-added-video") {
+            var filter;
+            var existingDivs = video.parentNode.getElementsByTagName('div');
+            if(existingDivs.length > 0 && existingDivs[0].className==video.getAttribute("changeType")){
+                filter = existingDivs[0];
+            }else {
+                filter = document.createElement("div");
+                filter.className= video.getAttribute("changeType");
+            }
+            filter.style.width = video.offsetWidth-4 + "px";
+            filter.style.height = video.offsetHeight-4 + "px";
+            if (video.y && video.x) { // this check is needed for IE
+                filter.style.top = video.y + "px";
+                filter.style.left = video.x-1 + "px";
+            }
+
+
+            if(existingDivs.length == 0 ){
+                video.parentNode.insertBefore(filter, video);
+            }
+        }
+    }
+
+
 }
-    
+
 function tipA(content){
     Tip(content, DURATION, 6000, CLICKCLOSE, true, FOLLOWMOUSE, false, ABOVE, true, OFFSETX , 1, STICKY, true, FADEIN, 100, FADEOUT, 100, PADDING, 5);
     return false;
@@ -53,7 +81,7 @@ function tipC(content){
 }
 
 function constructToolTipC(elem){
-    
+
    //constructing the tooltip, so this must be the new selected element!
    selectedElement=elem;
 
@@ -78,10 +106,10 @@ function constructToolTipC(elem){
 }
 
 function constructToolTipA(elem){
-   
+
    //constructing the tooltip, so this must be the new selected element!
    selectedElement=elem;
-   
+
    var previous_id = elem.getAttribute("previous");
    var next_id = elem.getAttribute("next");
    var change_id = elem.getAttribute("changeId");
@@ -101,10 +129,10 @@ function constructToolTipA(elem){
 }
 
 function constructToolTipR(elem){
-   
+
    //constructing the tooltip, so this must be the new selected element!
    selectedElement=elem;
-   
+
    var previous_id = elem.getAttribute("previous");
    var next_id = elem.getAttribute("next");
    var change_id = elem.getAttribute("changeId");
@@ -140,29 +168,29 @@ function tip2(anchor){
 function tipC2(destinationLink, content){
     Tip(content, FIX, FixCalcXY(destinationLink, 2,20), BALLOONSTEMWIDTH, 0, BALLOONSTEMHEIGHT, 0, DURATION, 20000, CLICKCLOSE, true, FOLLOWMOUSE, false, STICKY, true, OFFSETX, 1, FADEIN, 100, FADEOUT, 100, PADDING, 5);
 }
-    
+
 function tipR2(destinationLink, content){
     Tip(content, FIX, FixCalcXY(destinationLink, 2,20), BALLOONSTEMWIDTH, 0, BALLOONSTEMHEIGHT, 0, DURATION, 20000, CLICKCLOSE, true, FOLLOWMOUSE, false, STICKY, true, OFFSETX, 1, FADEIN, 100, FADEOUT, 100, PADDING, 5);
 }
-    
+
 function tipA2(destinationLink, content){
     Tip(content, FIX, FixCalcXY(destinationLink, 2,20), BALLOONSTEMWIDTH, 0, BALLOONSTEMHEIGHT, 0, DURATION, 20000, CLICKCLOSE, true, FOLLOWMOUSE, false, STICKY, true, OFFSETX, 1, FADEIN, 100, FADEOUT, 100, PADDING, 5);
 }
-    
+
 function FixCalcXY(el, xoffset, yoffset){
-    
+
     //fix for images inside the span
     var imagesContained = el.getElementsByTagName("img");
-    
+
     var imageHeight=0;
     if(!window.event && imagesContained.length > 0){
     imageHeight=imagesContained[0].offsetHeight;
     }
-    
+
     var xy = dojo.html.getAbsolutePosition(el, true);
     return [xy.x+xoffset, xy.y+yoffset-imageHeight];
 }
-    
+
 function changeClass(changeId, newCl){
     var allSpans = document.getElementsByTagName('span');
     // Walk through the list
@@ -173,7 +201,7 @@ function changeClass(changeId, newCl){
         }
     }
 }
-    
+
 function resetSelectedElement(){
     var allAs = document.getElementsByTagName('a');
     // Walk through the list
@@ -188,7 +216,7 @@ function resetSelectedElement(){
 
 function handleShortcut(e){
     var keynum;
-    
+
     if (window.event) {
         target = window.event.srcElement;
     } else if (e) {
@@ -199,7 +227,7 @@ function handleShortcut(e){
     if(target.tagName.toLowerCase()=="input"){
         return;
     }
-    
+
     if(window.event) // IE
     {
         keynum = e.keyCode;
@@ -208,21 +236,21 @@ function handleShortcut(e){
     {
         keynum = e.which;
     }
-    
+
     var isPrev=(keynum==83 || keynum==37 || keynum==80);// s, <- and p
     var isNext=(keynum==68 || keynum==39 || keynum==78);// d, -> and n
-    
+
     var target;
-    
+
     if(isPrev){
         target=selectedElement.getAttribute("previous");
     }else if(isNext){
         target=selectedElement.getAttribute("next");
     }
-    
+
     //custom hack for span support
     var destinationLink = document.getElementById(target);
-    
+
     // If we didn't find a destination, give up and let the browser do
     // its thing
     if (!destinationLink){
@@ -247,7 +275,7 @@ function scrollToEvent(e) {
     if (target.nodeType == 3 || target.nodeName.toLowerCase()=="img") {
         target = target.parentNode;
     }
-    
+
     // Paranoia; check this is an A tag
     if (target.nodeName.toLowerCase() != 'a'){
         throw("target is not an anchor");
@@ -256,12 +284,12 @@ function scrollToEvent(e) {
     // Find the <span> tag corresponding to this href
     // First strip off the hash (first character)
     anchor = target.hash.substr(1);
-    
+
     //custom hack for span support
     var destinationLink = document.getElementById(anchor);
-    
-    var continueEvent = scrollToTarget(destinationLink); 
-    
+
+    var continueEvent = scrollToTarget(destinationLink);
+
     // And stop the actual click happening
     if (!continueEvent && window.event) {
     window.event.cancelBubble = true;
@@ -273,9 +301,9 @@ function scrollToEvent(e) {
     }
     return continueEvent;
 }
-    
+
 function scrollToTarget(destinationLink){
-    
+
     // If we didn't find a destination, give up and let the browser do
     // its thing
     if (!destinationLink){
@@ -288,14 +316,14 @@ function scrollToTarget(destinationLink){
     window.scrollTo( xy[0], xy[1]);
 
     setTimeout("tip2('"+destinationLink.id+"')", 0);
-    
+
     //if, because otherwise it's not threadsafe-ish
     if(destinationLink.className != "diff-html-selected"){
-    
+
         if(selectedElement.getAttribute("oldClass") && selectedElement.getAttribute("oldClass").length>0 && selectedElement.getAttribute("oldClass")!=selectedElement.className){
             changeClass(selectedElement.id, selectedElement.getAttribute("oldClass"));
         }
-        
+
         setTimeout("changeClass('"+destinationLink.id+"', 'diff-html-selected')", 1);
         destinationLink.setAttribute("oldClass",destinationLink.className)
         setTimeout("changeClass('"+destinationLink.id+"', '"+destinationLink.className+"')", 2000);

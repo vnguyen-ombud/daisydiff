@@ -68,36 +68,38 @@ span.diff-html-removed img{
 
 span.diff-html-changed img{
  border: 2px dotted #000099;
- 
+
 }
 
-div.diff-removed-image, div.diff-added-image, div.diff-conflict-image {
+div.diff-removed-image, div.diff-added-image, div.diff-conflict-image,
+div.diff-removed-video, div.diff-added-video, div.diff-conflict-video {
   height: 300px;
-  width: 200px;  
+  width: 200px;
   position: absolute;
   opacity : 0.55;
   filter: alpha(opacity=55);
   -moz-opacity: 0.55;
 }
 
-div.diff-removed-image, div.diff-added-image, div.diff-conflict-image  {
+div.diff-removed-image, div.diff-added-image, div.diff-conflict-image,
+div.diff-removed-video, div.diff-added-video, div.diff-conflict-video  {
   margin-top: 2px;
   margin-bottom: 2px;
   margin-right: 2px;
   margin-left: 2px;
 }
 
-div.diff-removed-image {
+div.diff-removed-image, div.diff-removed-video {
   background-color: #fdc6c6;
   background-image: url(../images/diffmin.gif);
 }
-div.diff-added-image {
+div.diff-added-image, div.diff-added-video {
   background-color: #ccffcc;
   background-image: url(../images/diffplus.gif);
   background-repeat: no-repeat;
 }
 
-div.diff-conflict-image {
+div.diff-conflict-image, div.diff-conflict-video {
   background-color: #f781be;
   background-image: url(../images/diffconflict.gif);
   background-repeat: no-repeat;
@@ -118,8 +120,8 @@ table.diff-tooltip-link, table.diff-tooltip-link-changed {
 }
 
 table.diff-tooltip-link-changed {
-    border-top: thin dashed #000000; 
-    margin-top: 3px; 
+    border-top: thin dashed #000000;
+    margin-top: 3px;
     padding-top: 3px
 }
 td.diff-tooltip-prev {

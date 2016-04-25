@@ -16,6 +16,7 @@
 package org.outerj.daisy.diff.html;
 
 import org.outerj.daisy.diff.html.dom.ImageNode;
+import org.outerj.daisy.diff.html.dom.VideoNode;
 import org.outerj.daisy.diff.html.dom.Node;
 import org.outerj.daisy.diff.html.dom.TagNode;
 import org.outerj.daisy.diff.html.dom.TextNode;
@@ -98,7 +99,7 @@ public class HtmlSaxDiffOutput implements DiffOutput {
                                 .isFirstOfID())) {
                     handler.endElement("", "span", "span");
                     conflictStarted = false;
-                }                		
+                }
 
                 // no else because a removed part can just be closed and a new
                 // part can start
@@ -143,7 +144,7 @@ public class HtmlSaxDiffOutput implements DiffOutput {
                 				+ "-" + prefix + "-" + mod.getID());
                 	}
                 	addAttributes(mod, attrs);
-                	
+
                 	handler.startElement("", "span", "span", attrs);
                 	remStarted = true;
                 } else if (!conflictStarted
@@ -166,6 +167,8 @@ public class HtmlSaxDiffOutput implements DiffOutput {
 
                 if (textChild instanceof ImageNode) {
                     writeImage((ImageNode)textChild);
+                } else if (textChild instanceof VideoNode) {
+                    writeVideo((VideoNode)textchild);
                 } else {
                     handler.characters(chars, 0, chars.length);
                 }
@@ -207,6 +210,22 @@ public class HtmlSaxDiffOutput implements DiffOutput {
         }
         handler.startElement("", "img", "img", attrs);
         handler.endElement("", "img", "img");
+    }
+
+    private void writeVideo(VideoNode vidNode) throws SAXException {
+        AttributesImpl attrs = vidNode.getAttributes();
+        if (vidNode.getModification().getOutputType() == ModificationType.REMOVED) {
+            attrs.addAttribute("", "changeType", "changeType", "CDATA",
+                    "diff-removed-video");
+        } else if (vidNode.getModification().getOutputType() == ModificationType.ADDED) {
+            attrs.addAttribute("", "changeType", "changeType", "CDATA",
+                    "diff-added-video");
+        } else if (vidNode.getModification().getOutputType() == ModificationType.CONFLICT) {
+          attrs.addAttribute("", "changeType", "changeType", "CDATA",
+          "diff-conflict-video");
+        }
+        handler.startElement("", "iframe", "iframe", attrs);
+        handler.endElement("", "iframe", "iframe");
     }
 
     private void addAttributes(Modification mod, AttributesImpl attrs) {

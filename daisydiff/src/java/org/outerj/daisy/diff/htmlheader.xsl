@@ -31,7 +31,7 @@
       <script>
         htmlDiffInit();
       </script>
-      
+
         <xsl:variable name="spans" select="diffreport/diff//span[(@class='diff-html-added' or @class='diff-html-removed' or @class='diff-html-changed')  and @id]"/>
       	<div class="diff-topbar">
         <table class="diffpage-html-firstlast">
@@ -61,12 +61,12 @@
               <xsl:text>&#160;first</xsl:text>
             </a>
         </td>
-        
+
         <td style="text-align: center; font-size: 140%;">
             <a style="font-size: 100%;" class="diffpage-html-a" href="http://code.google.com/p/daisydiff/">Daisy Diff</a> compare report.<br/>
             <span style="font-style: italic; font-size: 70%;">Click on the changed parts for a detailed description. Use the left and right arrow keys to walk through the modifications.</span>
         </td>
-        
+
         <td style="text-align: right;">
             <a>
               <xsl:attribute name="class">diffpage-html-a</xsl:attribute>
@@ -113,8 +113,18 @@
         <xsl:attribute name="onError">updateOverlays()</xsl:attribute>
         <xsl:attribute name="onAbort">updateOverlays()</xsl:attribute>
   </xsl:if>
-
 </img>
+</xsl:template>
+
+<xsl:template match="iframe">
+<iframe>
+  <xsl:copy-of select="@*"/>
+  <xsl:if test="@chagneType='diff-removed-video' or @changeType='diff-added-video'">
+      <xsl:attribute name="onLoad">updateOverlays()</xsl:attribute>
+      <xsl:attribute name="onError">updateOverlays()</xsl:attribute>
+      <xsl:attribute name="onAbort">updateOverlays()</xsl:attribute>
+  </xsl:if>
+</iframe>
 </xsl:template>
 
 <xsl:template match="span[@class='diff-html-changed']">
